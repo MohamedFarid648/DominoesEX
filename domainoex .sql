@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2017 at 05:12 PM
+-- Generation Time: Apr 29, 2017 at 08:51 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -75,20 +75,21 @@ INSERT INTO `pieces` (`ID`, `NUM1`, `NUM2`) VALUES
 
 CREATE TABLE IF NOT EXISTS `play_piece` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `USER_PIECE_ID` int(11) NOT NULL,
+  `Num1` int(11) NOT NULL,
+  `Num2` int(11) NOT NULL,
   `USER_ID` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY `USER_PIECE_ID` (`USER_PIECE_ID`),
+  KEY `USER_PIECE_ID` (`Num1`),
   KEY `USER_ID` (`USER_ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `play_piece`
 --
 
-INSERT INTO `play_piece` (`ID`, `USER_PIECE_ID`, `USER_ID`) VALUES
-(4, 4, 1),
-(5, 8, 2);
+INSERT INTO `play_piece` (`ID`, `Num1`, `Num2`, `USER_ID`) VALUES
+(1, 6, 6, 1),
+(2, 5, 0, 2);
 
 -- --------------------------------------------------------
 
@@ -125,43 +126,46 @@ INSERT INTO `user` (`NAME`, `EMAIL`, `PASSWORD`, `ID`, `FLAG`) VALUES
 
 CREATE TABLE IF NOT EXISTS `user_pieces` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `USER_ID` int(11) NOT NULL,
   `PIECES_ID` int(11) NOT NULL,
+  `USER_ID` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `un1` (`USER_ID`,`PIECES_ID`),
-  KEY `USER_ID` (`USER_ID`,`PIECES_ID`),
-  KEY `PIECES_ID` (`PIECES_ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35 ;
+  UNIQUE KEY `PIECES_ID` (`PIECES_ID`),
+  KEY `USER_ID` (`USER_ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=69 ;
 
 --
 -- Dumping data for table `user_pieces`
 --
 
-INSERT INTO `user_pieces` (`ID`, `USER_ID`, `PIECES_ID`) VALUES
-(5, 1, 6),
-(6, 1, 10),
-(2, 1, 17),
-(3, 1, 20),
-(1, 1, 27),
-(7, 1, 28),
-(13, 2, 14),
-(9, 2, 15),
-(15, 2, 16),
-(12, 2, 23),
-(11, 2, 26),
-(16, 3, 6),
-(21, 3, 7),
-(17, 3, 11),
-(31, 3, 20),
-(20, 3, 25),
-(18, 3, 28),
-(27, 4, 4),
-(32, 4, 6),
-(28, 4, 8),
-(22, 4, 12),
-(24, 4, 15),
-(30, 4, 25),
-(33, 4, 26);
+INSERT INTO `user_pieces` (`ID`, `PIECES_ID`, `USER_ID`) VALUES
+(1, 10, 1),
+(2, 1, 1),
+(3, 27, 1),
+(4, 24, 1),
+(5, 19, 1),
+(6, 23, 1),
+(8, 2, 1),
+(10, 13, 2),
+(13, 4, 2),
+(15, 25, 2),
+(22, 8, 2),
+(23, 16, 2),
+(24, 22, 2),
+(25, 9, 2),
+(26, 17, 3),
+(27, 12, 3),
+(28, 14, 3),
+(29, 3, 3),
+(37, 21, 3),
+(43, 18, 3),
+(44, 20, 3),
+(49, 7, 4),
+(50, 11, 4),
+(51, 15, 4),
+(64, 28, 4),
+(65, 5, 4),
+(66, 6, 4),
+(68, 26, 4);
 
 --
 -- Constraints for dumped tables
@@ -171,8 +175,8 @@ INSERT INTO `user_pieces` (`ID`, `USER_ID`, `PIECES_ID`) VALUES
 -- Constraints for table `user_pieces`
 --
 ALTER TABLE `user_pieces`
-  ADD CONSTRAINT `user_pieces_ibfk_2` FOREIGN KEY (`PIECES_ID`) REFERENCES `pieces` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_pieces_ibfk_1` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `user_pieces_ibfk_2` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_pieces_ibfk_1` FOREIGN KEY (`PIECES_ID`) REFERENCES `pieces` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

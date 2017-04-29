@@ -40,15 +40,15 @@ if(isset($_SESSION["USER_EMAIL"])){
                       <select name="Pieces" id="Pieces">
                             <?php 
                               for($i=0;$i<$count_result;$i++){
-                                echo' <option value="'.$My_Pieces[$i]['User_Pieces_ID'].'">'.$My_Pieces[$i]['NUM1'].",,".$My_Pieces[$i]['NUM2'].'</option>';
+                                echo' <option value="'.$My_Pieces[$i]['NUM1'].",".$My_Pieces[$i]['NUM2'].",".$My_Pieces[$i]['User_Pieces_ID'].'">'.$My_Pieces[$i]['NUM1'].",,".$My_Pieces[$i]['NUM2'].'</option>';
                               }
                             ?>
-                        </select>
+                      </select>
                         <?php 
                         if($DBClassObject->getUserFlag($_SESSION["USER_ID"])==1){
-                       echo ' <input type="submit" name="playButton" value="play" onclick="AddPieces();"><br>';
+                       echo '<input type="submit" class="btn btn-success" name="playButton" value="play" onclick="AddPieces();"><br>';
                         }else{
-                            echo "You can't play now there is another user ";
+                            echo "<br><font color='red'>You can't play now there is another user</font> ";
                         }
                         ?>
                         <!--</form>-->
@@ -56,16 +56,17 @@ if(isset($_SESSION["USER_EMAIL"])){
                <?php
         }//end of if there are result or not
      else{
-         echo "You havn't any pieces tell now";
+         echo "<br/><font color='red'>You havn't any pieces tell now</font>";
      }
      
-     if($PlayedPieces){//if it return a result
+      if($PlayedPieces){//if it return a result
             $count_result2=  count($PlayedPieces);
             ?><br><br>
             <h1>Played Games:</h1>
         <table class="table" >
-            <th>USER_PIECE_ID</th>
             <th>User Email</th>
+            <th>Num1</th>
+            <th>Num1</th>
             <?php
                     
                     for($i=0;$i<$count_result2;$i++){
@@ -73,8 +74,10 @@ if(isset($_SESSION["USER_EMAIL"])){
                        ?>
 
                         <tr>
-                            <td><?php echo  $PlayedPieces[$i]['USER_PIECE_ID'];?></td>
                             <td><?php echo $DBClassObject->getUserEMAIL($PlayedPieces[$i]['USER_ID']);?></td>
+                            <td><?php echo  $PlayedPieces[$i]['Num1'];?></td>
+                            <td><?php echo  $PlayedPieces[$i]['Num2'];?></td>
+
 
                         </tr>
               <?php
@@ -86,11 +89,11 @@ if(isset($_SESSION["USER_EMAIL"])){
                <?php
         }//end of if there are result or not
      else{
-         echo "There is no game till now";
+         echo "<br/><font color='red'>There is no game till now</font>";
      }
 }
 else{
-    echo "Register first please ^_^";
+    echo "<a href='?page=Register'>Register first please</a> ^_^ ";
 }
 ?>
 <script>
@@ -100,9 +103,9 @@ function AddPieces(){
     // Create some variables we need to send to our PHP file
     var url = "Controller/AddGame.php";
     var checkVariable=true;
-    var Pieces=document.getElementById("Pieces").value;
+    var Pieces=document.getElementById("Pieces").value.split(",");
     if(checkVariable){
-    var vars = "Pieces="+Pieces;
+    var vars = "Num1="+Pieces[0]+"&Num2="+Pieces[1]+"&USER_PIECE_ID="+Pieces[2];
     hr.open("POST", url, true);
     // Set content type header information for sending url encoded variables in the request
     hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

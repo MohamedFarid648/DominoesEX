@@ -122,6 +122,7 @@ class DBClass {
  }
  public function getUserPieces($USER_ID){
     try{
+        
         $statement="SELECT UP.`ID` User_Pieces_ID ,P.`NUM1`,P.`NUM2` FROM `pieces` P "
                 . "inner join `user_pieces` UP on P.`ID`=UP.`PIECES_ID` "
                 . "inner join `user` U on U.`ID`=UP.`USER_ID` WHERE U.`ID`=:USER_ID";
@@ -159,7 +160,21 @@ class DBClass {
            echo "getUserPieces=>Error:".$exc->getMessage();} 
 
  }
- 
+ public function addUserPieces($USER_ID){
+     /*Generically,
+      *  FLOOR(RAND() * (<max> - <min> + 1)) + <min> generates a number between <min> and <max> inclusive4
+      Ex: SELECT name, address, FLOOR(RAND() * 401) + 100 AS `random_number`   FROM users   
+      * Here max=500,min=100,random number is the column name in user
+      *       */
+     $statemnt="INSERT INTO `user_pieces`(`USER_ID`, `PIECES_ID`) VALUES 
+         (:USER_ID,(select FLOOR(RAND()*28)+1 from `pieces` limit 1));";
+      $stm=$this->pdo->prepare($statement);
+      $stm->bindParam(":USER_ID", $USER_ID,PDO::PARAM_INT);
+      $stm->execute();
+      $rowCount = $stm->rowCount();
+      if($rowCount>0){echo 'You get   Your Piece Sucesfully';}
+      else{echo 'there is another user with this piece please try again ^_^';}
+ }
  public function getUserPiecesGames(){
     try{
        /* $statement="SELECT `EMAIL`,`NUM1`,`NUM2` from `pieces`,`user`,`user_pieces`,`play_piece` where "
@@ -184,62 +199,63 @@ class DBClass {
 
  }
  
- public function addGame($USER_PIECE_ID,$USER_ID){
+ public function addGame($Num1,$Num2,$USER_PIECE_ID,$USER_ID){
      try{
-                         $statement3="DELETE FROM `user_pieces` WHERE `ID`=:USER_PIECE_ID";
-                            $stm3=  $this->pdo->prepare($statement3);
-                            $stm3->bindParam(":USER_PIECE_ID",$USER_PIECE_ID,PDO::PARAM_INT);
-                            $stm3->execute();
-                            $rowCount3 = $stm3->rowCount();
-                            if($rowCount3>0){
-                                  /* $User_Piecies=$this->getUserPieces($USER_ID);
-                                   echo "count(User_Piecies):".count($User_Piecies);*/
-                                   $statement1="UPDATE `user` set `FLAG`=0 WHERE `ID`=:OLD_PLAYER";
-                                   $statement2="UPDATE `user` set `FLAG`=1 WHERE `ID`=:NEW_PLAYER";
-                                   $stm1=  $this->pdo->prepare($statement1);
-                                   $stm2=  $this->pdo->prepare($statement2);
-                                   $x=$USER_ID;
-                                   if($USER_ID==1){ $x=2;}
-                                   else if($USER_ID==2){$x=3;}
-                                   else if($USER_ID==3){$x=4;}
-                                   else if($USER_ID==4){$x=1;}
-                                   $stm1->bindParam(":OLD_PLAYER",$USER_ID,PDO::PARAM_INT);
-                                   $stm2->bindParam(":NEW_PLAYER",$x,PDO::PARAM_INT);
-                                   $stm2->execute();
-                                   $stm1->execute();
-                                   $rowCount1 = $stm1->rowCount();
-                                   $rowCount2 = $stm2->rowCount();
-                                   $check1=1;
-                                   $check2=1;
-                                   if($rowCount1<=0){$check1=0;echo "can't update flag old player id= ".$USER_ID;}
-                                   if($rowCount2<=0){$check2=0;echo "can't update flag new player id= ".$x;}
-                                   echo "Deleted Piece from Your Piecies Successfully";
-                                   
-                                              
-                       
-                       if($check1==1 && $check2==1){
-                            $statement="INSERT INTO `play_piece`(`USER_PIECE_ID`, `USER_ID`) VALUES (:USER_PIECE_ID,:USER_ID)";
+               /* $statement="SELECT P.`NUM1`,P.`NUM2` FROM `pieces` P 
+                inner join `user_pieces` UP on P.`ID`=UP.`PIECES_ID` 
+                inner join `user` U on U.`ID`=UP.`USER_ID` where UP.`ID`=:$USER_PIECE_ID ";*/
+         
+                            $statement="INSERT INTO `play_piece`(`Num1`,`Num2`,`USER_ID`) VALUES (:Num1,:Num2,:USER_ID)";
                             $stm=  $this->pdo->prepare($statement);
-                            $stm->bindParam(":USER_PIECE_ID",$USER_PIECE_ID,PDO::PARAM_INT);
+                            $stm->bindParam(":Num1",$Num1,PDO::PARAM_INT);
+                            $stm->bindParam(":Num2",$Num2,PDO::PARAM_INT);
                             $stm->bindParam(":USER_ID",$USER_ID,PDO::PARAM_INT);
                             $stm->execute();
                             $rowCount = $stm->rowCount();
                             if($rowCount>0){
-                                echo "<br/>Your Game is inserted Successfully";
-                            }else{
-                                 echo "<br/>Your Game  is Failed";
-
-                            }
-                        }
-                                   
-                            }
-                            else{ 
-                                echo "Deleted Piece from Your Piecies Failed<br>You can't play again";
+                                  echo "<br/><font color='blue'>Your Game is inserted Successfully</font>";
                               
+                                //Update User Flag
+                                $statement1="UPDATE `user` set `FLAG`=0 WHERE `ID`=:OLD_PLAYER";
+                                $statement2="UPDATE `user` set `FLAG`=1 WHERE `ID`=:NEW_PLAYER";
+                                $stm1=  $this->pdo->prepare($statement1);
+                                $stm2=  $this->pdo->prepare($statement2);
+                                $x=$USER_ID;
+                                if($USER_ID==1){ $x=2;}
+                                else if($USER_ID==2){$x=3;}
+                                else if($USER_ID==3){$x=4;}
+                                else if($USER_ID==4){$x=1;}
+                                $stm1->bindParam(":OLD_PLAYER",$USER_ID,PDO::PARAM_INT);
+                                $stm2->bindParam(":NEW_PLAYER",$x,PDO::PARAM_INT);
+                                $stm2->execute();
+                                $stm1->execute();
+                                $rowCount1 = $stm1->rowCount();
+                                $rowCount2 = $stm2->rowCount();
+                                $check1=0;
+                                $check2=0;
+
+                                if($rowCount1>0){$check1=1;echo "<br/><font color='blue'>Updating Flag Successfully for Old Player ( Email: ".$this->getUserEMAIL($USER_ID)." )" ;}
+                                if($rowCount2>0){$check2=1;echo "<br/><font color='blue'>Updating Flag Successfully for New Player ( Email: ".$this->getUserEMAIL($x)." )" ;}
+                                if($check1 == 0){echo "<br/><font color='red'>Updating Flag Failed for Old Player  ( Email: ".$this->getUserEMAIL($USER_ID)." )" ;}
+                                if($check2 == 0){echo "<br/><font color='red'>Updating Flag Failed for New Player  ( Email: ".$this->getUserEMAIL($x)." )" ;}
+
+
+                                //Delete from user_piece this piece
+                                 $statement3="DELETE FROM `user_pieces` WHERE `ID`=:USER_PIECE_ID";
+                                 $stm3=  $this->pdo->prepare($statement3);
+                                 $stm3->bindParam(":USER_PIECE_ID",$USER_PIECE_ID,PDO::PARAM_INT);
+                                 $stm3->execute();
+                                 $rowCount3 = $stm3->rowCount();
+                                 if($rowCount3>0){echo "<br/><font color='blue'>Your Piece is Deleted Successfully</font>";}
+                                 else{echo "<br/><font color='red'>Your Game Deleting Failed</font>";}
+
+                            }else{
+                                  echo "<br/><font color='red'>Your Game  is Failed</font>";
                             }
+                            
                     
             } catch (Exception $exc) {
-                echo "<br>addGame()=>Error:".$exc->getMessage();} 
+                echo "<br/>addGame()=><br/><font color='red'>Error:".$exc->getMessage()."<font>";} 
 
     }
  

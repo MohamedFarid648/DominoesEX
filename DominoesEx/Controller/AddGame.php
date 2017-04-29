@@ -12,7 +12,8 @@ $DBClassObject = new DBClass();
 session_start();
 //echo 'USER_ID:'.$_SESSION["USER_ID"].'<br>';
 //echo 'Pieces:'.$_POST["Pieces"];
-$result=$DBClassObject->addGame($_POST["Pieces"], $_SESSION['USER_ID']);
+  //var_dump($_POST);
+$result=$DBClassObject->addGame($_POST["Num1"],$_POST["Num2"],$_POST["USER_PIECE_ID"], $_SESSION['USER_ID']);
 /*if($result==1){
     echo'<br>You are Played successfully';
 }else{
