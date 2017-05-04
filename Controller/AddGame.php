@@ -21,7 +21,7 @@ $result=$DBClassObject->getLastGame();
 else{ 
     
                 if($result["Num1"]==$_POST["Num1"]||$result["Num1"]==$_POST["Num2"]||
-               $result["Num2"]==$_POST["Num1"]||$result["Num2"]==$_POST["Num1"]    
+               $result["Num2"]==$_POST["Num1"]||$result["Num2"]==$_POST["Num2"]    
                     ){
                 //ex: last game 1,4 then this game must be 1,any_number or any_number,1 or 4,any_number or any_number,4
                 $result2=$DBClassObject->addGame($_POST["Num1"],$_POST["Num2"],$_POST["USER_PIECE_ID"], $_SESSION['USER_ID']);
